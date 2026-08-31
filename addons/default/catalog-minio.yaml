@@ -1,0 +1,79 @@
+{
+  "kind": "Deployment",
+  "spec": {
+    "replicas": 1,
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/name": "catalog-minio"
+      }
+    },
+    "template": {
+      "spec": {
+        "containers": [
+          {
+            "env": [
+              {
+                "name": "MINIO_ROOT_USER",
+                "value": "k8pminio"
+              },
+              {
+                "name": "MINIO_ROOT_PASSWORD",
+                "value": "change-me-minio"
+              }
+            ],
+            "args": [
+              "server",
+              "/data",
+              "--console-address",
+              ":9001"
+            ],
+            "name": "minio",
+            "image": "minio/minio:RELEASE.2025-04-22T22-12-26Z",
+            "ports": [
+              {
+                "containerPort": 9000
+              },
+              {
+                "containerPort": 9001
+              }
+            ]
+          }
+        ]
+      },
+      "metadata": {
+        "labels": {
+          "app.kubernetes.io/name": "catalog-minio"
+        }
+      }
+    }
+  },
+  "metadata": {
+    "name": "catalog-minio",
+    "namespace": "default"
+  },
+  "apiVersion": "apps/v1"
+}
+---
+{
+  "kind": "Service",
+  "spec": {
+    "ports": [
+      {
+        "name": "s3",
+        "port": 9000
+      },
+      {
+        "name": "console",
+        "port": 9001
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/name": "catalog-minio"
+    }
+  },
+  "metadata": {
+    "name": "catalog-minio",
+    "namespace": "default"
+  },
+  "apiVersion": "v1"
+}
