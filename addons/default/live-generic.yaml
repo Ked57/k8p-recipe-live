@@ -1,0 +1,11 @@
+{
+  "data": {
+    "probe": "day2"
+  },
+  "kind": "ConfigMap",
+  "metadata": {
+    "name": "live-generic",
+    "namespace": "default"
+  },
+  "apiVersion": "v1"
+}
