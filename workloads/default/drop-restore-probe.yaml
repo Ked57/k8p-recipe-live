@@ -1,0 +1,55 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: default
+  labels:
+    app.kubernetes.io/name: drop-restore-probe
+    app.kubernetes.io/managed-by: kubepilot
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: drop-restore-probe
+  namespace: default
+  labels:
+    app.kubernetes.io/name: drop-restore-probe
+    app.kubernetes.io/managed-by: kubepilot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: drop-restore-probe
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: drop-restore-probe
+        app.kubernetes.io/managed-by: kubepilot
+    spec:
+      containers:
+        - name: drop-restore-probe
+          image: nginx:1.27-alpine
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 20m
+              memory: 32Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: drop-restore-probe
+  namespace: default
+  labels:
+    app.kubernetes.io/name: drop-restore-probe
+    app.kubernetes.io/managed-by: kubepilot
+spec:
+  selector:
+    app.kubernetes.io/name: drop-restore-probe
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+      protocol: TCP
